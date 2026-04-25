@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رحلة لميس ✨</title>
+    <style>
+        :root { --p-bg: #ffeef2; --p-main: #ff85a2; --p-dark: #d81b60; --white: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--p-bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        .container { width: 90%; max-width: 400px; background: var(--white); border-radius: 40px; padding: 25px; text-align: center; box-shadow: 0 15px 35px rgba(255, 133, 162, 0.2); border: 6px solid var(--white); position: relative; min-height: 600px; }
+        .step { display: none; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        
+        .character-img { width: 100%; max-width: 220px; mix-blend-mode: multiply; margin-bottom: 10px; }
+        .my-photo { width: 100%; max-width: 250px; border-radius: 20px; mix-blend-mode: multiply; margin-bottom: 15px; }
+        
+        .btn-opt { background: #fffafa; border: 2px solid #ffc1e3; padding: 15px; border-radius: 20px; cursor: pointer; font-size: 17px; color: #444; display: block; width: 100%; margin-bottom: 10px; transition: 0.3s; text-align: right; }
+        .btn-main { background: var(--p-main); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; }
+        #moving-btn, #no-btn-final { position: absolute; z-index: 999; min-width: 80px; }
+        .custom-file-upload { border: 2px dashed var(--p-main); display: inline-block; padding: 25px; cursor: pointer; border-radius: 25px; background: #fff5f8; margin: 15px 0; width: 85%; color: var(--p-dark); font-weight: bold; }
+        input[type="file"] { display: none; }
+        .scanner-box { display: none; margin: 20px 0; position: relative; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .scanner-bar { width: 0%; height: 100%; background: var(--p-main); transition: 0.1s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="game-form" action="https://formspree.io/f/xrerjrkv" method="POST" enctype="multipart/form-data">
+        
+        <div class="step active" id="step1">
+            <h1 style="color: var(--p-dark);">رحلة لميس ✨</h1>
+            <img src="lamis_1.png.jpg" class="character-img">
+            <p>جاهزة لأحلى وألطف رحلة يا شقرا؟ 😍</p>
+            <button type="button" class="btn-main" onclick="nextStep(2)">يلا نبدأ! ✨</button>
+        </div>
+
+        <div class="step" id="step2">
+            <h3>أكثر إشي بضحكك بالكوكب؟ 😂</h3>
+            <img src="lamis_2.png.PNG" class="character-img">
+            <button type="button" class="btn-opt" onclick="nextStep(3)">يزن أكيد 😉</button>
+        </div>
+
+        <div class="step" id="step3">
+            <h3>بطنك بوجعك هسا؟ 🤨</h3>
+            <img src="lamis_3.png.PNG" class="character-img">
+            <p style="color: #d81b60; font-weight: bold;">سلامة قلبك يا رب وما تشوفي شر! 🌸</p>
+            <button type="button" class="btn-opt" onclick="alert('يا روحي سلامتك ألف سلامة.. ان شاء الله بوجعي ولا بوجعك ❤️'); nextStep(4)">آه والله شوي 🥺</button>
+            <button type="button" class="btn-opt" onclick="alert('يا عمري الحمد لله.. هيك نورت الدنيا ورجعت الضحكة! 😍'); nextStep(4)">لأ الحمد لله هسا أحسن 😍</button>
+        </div>
+
+        <div class="step" id="step4">
+            <h3>شو لابسة؟ اعترفي يا شقرا 👗</h3>
+            <img src="lamis_4.png.PNG" class="character-img">
+            <div style="height: 180px; position: relative; margin-top: 20px;">
+                <button type="button" class="btn-opt" style="width:100%" onclick="nextStep(5)">بنطلون هولي كيتي 🐱</button>
+                <button type="button" class="btn-opt" id="moving-btn" onmouseover="moveBtn('moving-btn')" onclick="moveBtn('moving-btn')">اخرس</button>
+            </div>
+        </div>
+
+        <div class="step" id="step5">
+            <h3>مرحلة التوثيق! 📸</h3>
+            <p>لازم تصوري شو لابسة عشان الرادار يتأكد.. الصورة رح تروح ليزن فوراً فديري بالك! 🔥</p>
+            <img src="lamis_5.png.PNG" class="character-img">
+            <label class="custom-file-upload">
+                <input type="file" name="attachment" accept="image/*" id="photo-upload" onchange="startFakeAI()">
+                افتحي الكاميرا وصوري 📷
+            </label>
+            <div class="scanner-box" id="scanner-box">
+                <p id="ai-text" style="font-size: 13px; margin-bottom: 5px; color: var(--p-dark);">جاري فحص الكيوت... 🔍</p>
+                <div class="scanner-bar" id="scanner-bar"></div>
+            </div>
+            <p id="error-msg" style="color: #d81b60; font-size: 14px; font-weight: bold; display: none;"></p>
+        </div>
+
+        <div class="step" id="step5_5">
+            <h3 style="color: var(--p-dark);">أنتِ.. أوفففف لولو 🫦🫦</h3>
+            <img src="yazan_bite.png.JPG" class="my-photo">
+            <button type="button" class="btn-main" onclick="nextStep(6)">كملي يا قمر.. 😉</button>
+        </div>
+
+        <div class="step" id="step6">
+            <h3>تحدي الأصابع السريعة! 🔥</h3>
+            <p>اضغطي 20 مرة بسرعة!</p>
+            <div id="timer" style="font-size: 24px; color: red; font-weight: bold;">10</div>
+            <button type="button" class="btn-main" id="tap-btn" onclick="tapCounter()">إضغطي (0 / 20)</button>
+        </div>
+
+        <div class="step" id="step7">
+            <h3>بتحبي يزن؟ 😏</h3>
+            <img src="lamis_8.png.PNG" class="character-img">
+            <button type="button" class="btn-opt" style="width:100%" onclick="alert('كنت عارف أصلاً 😎'); nextStep(8)">بموووت فيه ❤️</button>
+            <button type="button" class="btn-opt" onclick="alert('كنت شاكك والله 😂'); nextStep(8)">أكيد أه 😍</button>
+        </div>
+
+        <div class="step" id="step8">
+            <h3>بتحبي رافد؟ 🙄</h3>
+            <img src="lamis_9.png.GIF" class="character-img">
+            <div style="height: 120px; position: relative;">
+                <button type="button" class="btn-opt" style="width:100%" onclick="nextStep(9)">بحب يزن وبس! 💖</button>
+                <button type="button" class="btn-opt" id="no-btn-final" onmouseover="moveBtn('no-btn-final')">لأ ❌</button>
+            </div>
+        </div>
+
+        <div class="step" id="step9">
+            <h3>تحليل الشخصية والكياتة 🧬</h3>
+            <img src="lamis_7.png.JPG" class="character-img">
+            <p id="analysis-text">النظام يحلل البيانات الآن...</p>
+            <div class="scanner-box" style="display:block;">
+                <div class="scanner-bar" id="analysis-bar"></div>
+            </div>
+            <button type="button" id="start-analysis" class="btn-main" onclick="runAnalysis()">ابدأي التحليل ✨</button>
+        </div>
+
+        <div class="step" id="step10">
+            <div style="background: #fff0f5; padding: 25px; border-radius: 30px; border: 2px dashed var(--p-main);">
+                <img src="lamis_6.png.JPG" style="width:100px; mix-blend-mode: multiply;">
+                <h2 style="color: var(--p-dark);">تم الاستلام بنجاح! ✅</h2>
+                <p>لميس.. الصورة وصلت ليزن هسا 😂</p>
+                <h1 style="color:red; font-size: 45px;">بحبك ❤️</h1>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    let taps = 0; let timeLeft = 10; let aiAttempts = 0;
+
+    function nextStep(s) {
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        const stepId = (s === 5.5) ? 'step5_5' : 'step' + s;
+        document.getElementById(stepId).classList.add('active');
+        if(s === 6) startTapChallenge();
+    }
+
+    function moveBtn(id) {
+        const btn = document.getElementById(id); const container = document.querySelector('.container');
+        const x = Math.random() * (container.clientWidth - 100);
+        const y = Math.random() * (container.clientHeight - 200);
+        btn.style.position = 'absolute'; btn.style.left = x + 'px'; btn.style.top = y + 'px';
+    }
+
+    function startFakeAI() {
+        const scannerBox = document.getElementById('scanner-box');
+        const scannerBar = document.getElementById('scanner-bar');
+        const aiText = document.getElementById('ai-text');
+        const errorMsg = document.getElementById('error-msg');
+        scannerBox.style.display = 'block'; errorMsg.style.display = 'none';
+        let width = 0;
+        const interval = setInterval(() => {
+            width += 2; scannerBar.style.width = width + '%';
+            if (width >= 100) {
+                clearInterval(interval);
+                aiAttempts++;
+                if (aiAttempts === 1) {
+                    errorMsg.innerText = "❌ ممم الصورة مش واضحة.. صوري صورة واضحة عشان يزن يشوف منيح 😂";
+                    errorMsg.style.display = 'block'; scannerBar.style.width = '0%';
+                } else {
+                    aiText.innerText = "✅ تم التأكد من الصورة.. شو هل حلاوة هذي! 😍";
+                    submitActualForm();
+                }
+            }
+        }, 40);
+    }
+
+    async function submitActualForm() {
+        const form = document.getElementById('game-form');
+        const formData = new FormData(form);
+        try {
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) { console.log("الصورة وصلت!"); }
+            });
+            setTimeout(() => { nextStep(5.5); }, 2000);
+        } catch (e) { setTimeout(() => { nextStep(5.5); }, 2000); }
+    }
+
+    function startTapChallenge() {
+        taps = 0; timeLeft = 10;
+        document.getElementById('tap-btn').innerText = "إضغطي (0 / 20)";
+        const timerInt = setInterval(() => {
+            timeLeft--; document.getElementById('timer').innerText = timeLeft;
+            if(taps >= 20 || timeLeft <= 0) { 
+                clearInterval(timerInt); 
+                if(taps >= 20) nextStep(7); 
+                else { alert("يلا أسرع يا شقرا! حاولي مرة ثانية 😂"); startTapChallenge(); }
+            }
+        }, 1000);
+    }
+
+    function tapCounter() { taps++; document.getElementById('tap-btn').innerText = "إضغطي (" + taps + " / 20)"; }
+
+    function runAnalysis() {
+        const bar = document.getElementById('analysis-bar');
+        const text = document.getElementById('analysis-text');
+        const btn = document.getElementById('start-analysis');
+        btn.style.display = 'none';
+        let w = 0;
+        const intv = setInterval(() => {
+            w++; bar.style.width = w + '%';
+            if(w == 30) text.innerText = "قياس نسبة الرقة... ✨";
+            if(w == 60) text.innerText = "فحص معدل الكياتة... 🎀";
+            if(w == 90) text.innerText = "تحليل حنيّة القلب... ❤️";
+            if(w >= 100) {
+                clearInterval(intv);
+                text.innerHTML = "<b style='color:var(--p-dark)'>النتيجة: كائن عسل بزيادة.. وأهم معلومة إنك أغلى إشي عند يزن وبحبك كثير! ❤️</b>";
+                setTimeout(() => { nextStep(10); }, 4000);
+            }
+        }, 50);
+    }
+</script>
+</body>
+</html>
